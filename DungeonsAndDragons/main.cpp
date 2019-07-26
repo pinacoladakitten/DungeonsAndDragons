@@ -27,7 +27,7 @@ using namespace std;
  * 
  */
 //function prototypes
-void displayStats(); //displays player's stats
+void displayStats(bool&,ofstream&,string&,int&,int&,int&,char&);// displays player's stats in i/o file
 void setName(string&); //sets name of player
 void pressEnter(); // wait to press enter
 int rollDice(int); //rolling dice
@@ -44,8 +44,15 @@ void onDeath(bool&,ofstream&,string&,int&,int&,int&,char&);
 // event after battle#1
 void eventOne(char&,int&,int&,int&,string&,bool&,vector<string>&,
         vector<int>&);
+// event after battle#2
+void eventTwo(char&,int&,int&,int&,string&,bool&,vector<string>&,
+        vector<int>&,int[6][6],int[10]);
 //refill spell slots
 void refillSpell(vector<string>&,vector<int>&,int&,int&);
+//check for skip
+bool checkSkip(string&);
+//level up player
+void levelUp(char&,int&,int&,int&);
 
 /*main*/
 int main(int argc, char** argv) {
@@ -56,7 +63,7 @@ int main(int argc, char** argv) {
     ifstream in;               //Input File
     ofstream out;              //Output File
     
-    //Initialize variables
+    //Initialize variables for I/O
     string inName="InputHistory.dat";   //String Name
     char outName[]="OutputHistory.dat"; //Character Array Name
     in.open(inName.c_str());        //Open the Input file
@@ -69,19 +76,25 @@ int main(int argc, char** argv) {
         heroInt = 0, // hero's intellect value
         heroArm = 0; // hero's armor value
     bool heroDead = false;
-    //initialize arrays/vectors
-    vector<string> commands;
-    vector<int> SpellU;
+    //Initialize arrays/vectors
+    vector<string> commands; // command list
+    vector<int> SpellU; // spell use list
+    int numbBlock[6][6]; // number puzzle block
+    int numbLine[10]; // number puzzle block
     
     //Main Event
     cout << "~Welcome to the world of Dungeons & Dragons!\nUsually playing the "
             " normal game is quite complex,\nhowever I decided to simplify some"
             " things to make\nthe combat easier to understand. " << endl << endl;
+    cout << "**If you would like to skip battles up to the new content, set name as 'Skip'"
+            << " no quotes**" << endl;
     cout << "~Anyway, let's first choose a name for your character,\n"
             "please enter your hero's name:" << endl;
     
     //Call function to set name
     setName(name);
+    //check skip
+    checkSkip(name);
     
     cout << "~Now choose a class for " << name << " to be, this might be confusing right\n"
             "now, but as you play, you should be able to understand what\n"
@@ -110,35 +123,15 @@ int main(int argc, char** argv) {
     // parameters are: (hero: stats passed by value,
     // enemy's: name, strength, intellect, armor, command choice, output to file,
     // hero: command list, spell use list
-    battleOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, out, commands, 
-            SpellU, "Goblin", 1, 0, 8, 1);
+    if(!checkSkip(name)){
+        battleOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, out, commands, 
+                SpellU, "Goblin", 1, 0, 8, 1);
+    }
     
     //Commence more of the game!
     cout << "You defeated the Goblin! Now to continue your adventure!" << endl;
-    //Level up player's stats based on class
-    switch(heroJob){
-        case 'W': //warrior
-            cout << "~~From the battle, you gained~~" << endl 
-                    << "+2 Strength" << setw(15) << "+1 Armor" << endl;
-            heroStr += 2;
-            heroArm += 1;
-            break;
-        case 'M': //mage
-            cout << "~~From the battle, you gained~~" << endl 
-                    << "+2 Intellect" << endl;
-            heroInt += 2;
-            break;
-        case 'C': //cleric
-            cout << "~~From the battle, you gained~~" << endl 
-                    << "+1 Intellect, +1 Strength, +1 Armor" << endl;
-            heroStr += 1;
-            heroArm += 1;
-            heroInt += 1;
-            break;
-        default:
-            break;
-    }
-    pressEnter();
+    //level player
+    levelUp(heroJob,heroStr,heroInt,heroArm);
     
     //More Story...
     eventOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, commands, SpellU);
@@ -149,35 +142,41 @@ int main(int argc, char** argv) {
     pressEnter();
     
     //Commence Battle 2!!
-    battleOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, out, commands, 
-            SpellU, "Skeleton Lord", 3, 3, 11, 3);
+    if(!checkSkip(name)){
+        battleOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, out, commands, 
+                SpellU, "Skeleton Lord", 3, 3, 11, 3);
+    }
+    cout << "You defeated the Skeleton Lord! Now to continue your adventure!" << endl;
+    //level player
+    levelUp(heroJob,heroStr,heroInt,heroArm);
     
-    //commence second battle
+    //Commence Event 2!!
+    eventTwo(heroJob, heroStr, heroInt, heroArm, name, heroDead, commands, 
+            SpellU, numbBlock, numbLine);
+    
+    cout << "The air breathes a cold wind at you...it's silent...then you can\n"
+            "hear a faint prayer of some kind lingering about the darkness\n"
+            "around you." << endl;
+    pressEnter();
+    cout << "The corpse of the once defeated Skeleton Lord...is gone...then you\n"
+            "look ahead and you see two glowing red eyes in the shadows." << endl;
+    cout << "It seems that this battle isn't over yet, prepare yourself!!!" << endl;
+    pressEnter();
+    //Commence Battle 3!!
+    battleOne(heroJob, heroStr, heroInt, heroArm, name, heroDead, out, commands, 
+            SpellU, "Skeleton Lord Alpha", 7, 7, 16, 3);
     
     cout << "CONGRATS!! You've made it to the end! This is all I can do for now\n"
             "since I gotta turn this in. Thank you for playing!" << endl;
     
     //Output file for stats
-    out << "~Here are your player statistics for this run!~" << endl;
-    out << "Name: " << name << endl;
-    out << "Class: ";
-    (heroJob=='W') ? out << "Warrior" : out << "Mage";
-    out << endl;
-    out << "Strength: " << heroStr << endl;
-    out << "Intellect: " << heroInt << endl;
-    out << "Armor Rating: " << heroArm << endl;
+    displayStats(heroDead, out, name, heroStr, heroInt, heroArm, heroJob);
     
 }
 
 //displays stats of characters
-void displayStats() {
-    cout << "";
-}
-
-//if the player is defeated
-void onDeath(bool& heroDead, ofstream& out, string& name, int& heroStr, 
+void displayStats(bool& heroDead, ofstream& out, string& name, int& heroStr, 
         int& heroInt, int& heroArm, char& heroJob) {
-    cout << "~YOU HAVE FALLEN!! YOUR STORY ENDS HERE!~" << endl;
     //Output file for stats
     out << "~Here are your player statistics for this run!~" << endl;
     out << "Name: " << name << endl;
@@ -202,6 +201,14 @@ void onDeath(bool& heroDead, ofstream& out, string& name, int& heroStr,
     exit(0);
 }
 
+//if the player is defeated
+void onDeath(bool& heroDead, ofstream& out, string& name, int& heroStr, 
+        int& heroInt, int& heroArm, char& heroJob) {
+    cout << "~YOU HAVE FALLEN!! YOUR STORY ENDS HERE!~" << endl;
+    //Output file for stats
+    displayStats(heroDead, out, name, heroStr, heroInt, heroArm, heroJob);
+}
+
 //set hero's name
 void setName(string& name) {
     //get name from input
@@ -213,6 +220,16 @@ void setName(string& name) {
         name = "Hero";
     }
     cout << endl;
+}
+
+//check for skipping
+bool checkSkip(string& name) {
+    if(name=="Skip") {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 //press enter
@@ -229,6 +246,14 @@ void pressEnter() {
 int rollDice(int diceAmt) {
     //Get Roll Amount from Random(0-diceAmt)
     int roll = rand() % diceAmt + 1;
+    //Return Roll
+    return roll;
+}
+//roll dice function for floats
+int rollDice(float diceAmt) {
+    int fDice = round(diceAmt);
+    //Get Roll Amount from Random(0-diceAmt)
+    int roll = rand() % fDice + 1;
     //Return Roll
     return roll;
 }
@@ -390,6 +415,16 @@ string playerTurn(char& heroJob, vector<string> &commands, vector<int> &SpellU) 
                         cout << "NOT ENOUGH SPELL USES!!" << endl;
                     }
                 }
+                else if(commands.at(choice)=="Vampiric Touch") {
+                    if(SpellU.at(choice) > 0) {
+                        --SpellU.at(choice);
+                        return "Vampiric Touch";
+                    }
+                    else {
+                        choice = -1;
+                        cout << "NOT ENOUGH SPELL USES!!" << endl;
+                    }
+                }
                 else{
                     cout << "NOT A VALID INPUT!!" << endl;
                     choice = -1;
@@ -420,7 +455,7 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
         int enmStr=0, int enmInt=0, int enmArm=0, int enmChce=1)
 {   
     const float BENM_HP = 40.f;
-    const float BHERO_HP = 65.f;
+    const float BHERO_HP = 85.f;
     
     //Set Hero's Stats
     static int heroHP = BHERO_HP * (heroArm*0.08), // hero health 
@@ -491,6 +526,11 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
             protLng = 3;
             hroAttk = false;
         }
+        else if(heroCmd == "Vampiric Touch") {
+            cout << "Rolling Dice to hit...1d20+Intellect" << endl;
+            cout << name << " rolled: *" << roll << "(+" << heroInt << ")*" << endl;
+            hroAttk = true;
+        }
         else {
             cout << "You do nothing..." << endl;
             hroAttk = false;
@@ -533,6 +573,18 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
                     " fire damage to the enemy\nby conjuring a small fireball and throwing it!" << endl;
                     //add intellect modifier
                     roll += heroInt;
+                }
+                if(heroCmd == "Vampiric Touch") {
+                    roll = rollDice(6) + rollDice(6) + rollDice(6);
+                    //if critical damage, double damage
+                    (crit) ? roll*=2 : roll *=1;
+                    //show roll for damage amount if hit
+                    cout << "The attack hits! Now rolling for damage...3d6 damage" << endl;
+                    cout << name << " deals: *" << roll <<"* necrotic damage to the enemy\n"
+                        << "by siphoning the enemy's life through their palms!" << endl;
+                    //heal hero
+                    cout << name << " restores *" << roll/2 << "* health!!" << endl;
+                    heroHP+=roll/2;
                 }
                 //deal damage
                 enmHP -= roll;
@@ -680,7 +732,37 @@ void refillSpell(vector<string>&commands, vector<int>&SpellU,
         if(commands.at(i)=="Healing Word"){
             SpellU.at(i) = 2+(heroInt*0.5);
         }
+        if(commands.at(i)=="Vampiric Touch"){
+            SpellU.at(i) = 2+(heroInt*0.5);
+        }
     }
+}
+
+void levelUp(char& heroJob, int& heroStr, int& heroInt, int& heroArm) {
+    //Level up player's stats based on class
+    switch(heroJob){
+        case 'W': //warrior
+            cout << "~~From the battle, you gained~~" << endl 
+                    << "+2 Strength" << setw(15) << "+1 Armor" << endl;
+            heroStr += 2;
+            heroArm += 1;
+            break;
+        case 'M': //mage
+            cout << "~~From the battle, you gained~~" << endl 
+                    << "+2 Intellect" << endl;
+            heroInt += 2;
+            break;
+        case 'C': //cleric
+            cout << "~~From the battle, you gained~~" << endl 
+                    << "+1 Intellect, +1 Strength, +1 Armor" << endl;
+            heroStr += 1;
+            heroArm += 1;
+            heroInt += 1;
+            break;
+        default:
+            break;
+    }
+    pressEnter();
 }
 
 //event after battle one
@@ -739,4 +821,131 @@ void eventOne(char& heroJob, int& heroStr, int& heroInt,
         cout << "You place the grimoire back and move on." << endl;
     }
     pressEnter();
+}
+
+void eventTwo(char& heroJob, int& heroStr, int& heroInt, 
+        int& heroArm, string& name, bool& heroDead, 
+        vector<string>&commands, vector<int>&SpellU, 
+        int numbBlock[6][6], int numbLine[10])
+{
+    //Initialize variables
+    char guess = 0;
+    int roll = 0;
+    int tries = 3;
+    //Fill Array of numbers
+    for(int index1 = 0; index1 < 6; ++index1) {
+        for(int index2 = 0; index2 < 6; ++index2) {
+            numbBlock[index1][index2] = index2*3 + index1*3 + 1;
+        }
+    }
+    //Fill 1D Array
+    for(int index1 = 0; index1 < 10; ++index1) {
+        numbLine[index1] = index1*2 + 2;
+    }
+    //Story...
+    cout << "You look around and see an average wooden table in the middle of\n"
+            "the room for some odd reason. You also see an odd looking box on\n"
+            "this table." << endl;
+    pressEnter();
+    cout << "The box has a bunch of numbers written on each side, suddenly a\n"
+            "voice begins to whisper in your ear..." << endl;
+    pressEnter();
+    cout << "~This box shall give you great power if you can solve what lies\n"
+            "within it...~" << endl;
+    //Print Array of numbers
+    for(int index1 = 0; index1 < 6; ++index1) {
+        cout << setw(0); 
+        for(int index2 = 0; index2 < 6; ++index2) {
+            cout << setw(4) << numbBlock[index1][index2] << setw(4);
+        }
+        cout << endl;
+    }
+    //Ask if they want to solve puzzle
+    cout << "Do you want to try and solve the puzzle box?(Type y/n)" << endl;
+    while(guess == 0) {
+        if(cin >> guess) {
+            cin.ignore();
+            cin.clear();
+            if(guess=='n'||guess=='N'){
+                cout << "You put the box down and continue your adventure..." << 
+                        endl;
+                pressEnter();
+                return;
+            }
+            if(guess!='n'&&guess!='N'&&guess!='y'&&guess!='Y'){
+                cout << "NOT A VALID INPUT!!!" << endl;
+                guess = 0;
+            }
+        }
+        else {
+            cout << "NOT A VALID INPUT!!!" << endl;
+            guess = 0;
+        }
+    }
+    //Ask Question
+    cout << "------------------------------------------------------------" <<
+        endl << "~~Solve the puzzle box, then you will be granted great power~~" <<
+        endl << "~~Roll 1d20, and if it is a number on the box, then you succeed~~" <<
+            endl << "~~You get 3 tries to succeed~~" <<
+        endl << "------------------------------------------------------------" <<
+        endl;
+    pressEnter();
+    while(tries > 0) {
+        //roll dice
+        roll = rollDice(20);
+        cout << "Rolling... " << roll << endl;
+        //check if succeeded by looping through numbers on box
+        for(int index1 = 0; index1 < 6; ++index1) {
+            for(int index2 = 0; index2 < 6; ++index2) {
+                if (roll == numbBlock[index1][index2]) {
+                    cout << "**SUCCESS!! The box opens and reveals a great power!**" <<
+                    endl << "~~You learned the spell Vampiric Touch!!~~" << endl;
+                    commands.push_back("Vampiric Touch");
+                    SpellU.push_back(3);
+                    pressEnter();
+                    tries = 0;
+                    return;
+                }
+            }
+        }
+        cout << "That number is not on the box...try again...." << endl;
+        pressEnter();
+        --tries;
+    }
+    //-----------if failed...----------
+    cout << "You did not successfully solve the puzzle box, however\n"
+    "the box still wants to grant some of its power to you..." << endl;
+    cout << "~I will grant you one more chance...solve this puzzle and you will\n"
+            "gain a small dose of power...~" << endl;
+    pressEnter();
+    //Print Array of numbers
+    for(int index1 = 0; index1 < 10; ++index1) {
+        cout << setw(0); 
+        cout << setw(4) << numbLine[index1] << setw(4);
+    }
+    cout << endl;
+    tries = 1;
+    while(tries > 0) {
+        //roll dice
+        roll = rollDice(20);
+        cout << "Rolling... " << roll << endl;
+        //check if succeeded by looping through numbers on box
+        for(int index1 = 0; index1 < 10; ++index1) {
+            if (roll == numbLine[index1]) {
+                cout << "**SUCCESS!! The box opens and reveals a great power!**" <<
+                endl << "~~You gained Intellect +3!~~" << endl;
+                heroInt+=3;
+                pressEnter();
+                tries = 0;
+                return;
+            }
+        }
+        cout << "That number is not on the box...try again...." << endl;
+        pressEnter();
+        --tries;
+    }
+    cout << "Wow...um...you still can't solve this? Sorry dude, can't\n"
+            "help you now...bye. The box shatters into 1 million pieces." << endl;
+    pressEnter();
+    return;
 }
