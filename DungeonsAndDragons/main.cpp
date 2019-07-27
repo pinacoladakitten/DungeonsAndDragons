@@ -545,8 +545,8 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
         // execute the attack
         if(hroAttk) {
             //show the enemy's armor rating to the player if attacking
-            cout << "The enemy's Armor Rating is: " << enmArm << endl <<
-                "----------" << endl;
+            cout << "The enemy's Armor Rating is: " << enmArm << endl;
+            pressEnter();
             //if the player makes a successful roll (roll > enemy armor)
             //then roll to attack the enemy
             if(roll+heroStr >= enmArm || roll+heroInt >= enmArm)
@@ -633,8 +633,8 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
         //if the enemy is attacking
         if(enmAttk) {
             //show player armor rating
-            cout << name << "'s Armor Rating is: " << heroArm << endl <<
-                "----------" << endl;
+            cout << name << "'s Armor Rating is: " << heroArm << endl;
+            pressEnter();
             //if successful roll
             if(roll+enmStr >= heroArm || roll+enmInt >= heroArm ) {
                 switch(enmCmd){
