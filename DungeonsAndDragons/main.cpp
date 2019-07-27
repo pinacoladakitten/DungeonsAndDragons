@@ -563,7 +563,7 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
                     //add strength modifier
                     roll += heroStr;
                 }
-                if(heroCmd == "Fireblast") {
+                else if(heroCmd == "Fireblast") {
                     roll = rollDice(12);
                     //if critical damage, double damage
                     (crit) ? roll*=2 : roll *=1;
@@ -574,7 +574,7 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
                     //add intellect modifier
                     roll += heroInt;
                 }
-                if(heroCmd == "Vampiric Touch") {
+                else if(heroCmd == "Vampiric Touch") {
                     roll = rollDice(6) + rollDice(6) + rollDice(6);
                     //if critical damage, double damage
                     (crit) ? roll*=2 : roll *=1;
@@ -585,6 +585,9 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
                     //heal hero
                     cout << name << " restores *" << roll/2 << "* health!!" << endl;
                     heroHP+=roll/2;
+                }
+                else{
+                    roll=0;
                 }
                 //deal damage
                 enmHP -= roll;
@@ -678,6 +681,9 @@ void battleOne(char& heroJob, int& heroStr, int& heroInt,
                         roll += enmInt;
                         //heal enemy
                         enmHP += 4;
+                        break;
+                    default:
+                        roll=0;
                         break;
                 }
                 //deal damage
