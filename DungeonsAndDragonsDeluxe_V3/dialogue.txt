@@ -1,0 +1,78 @@
+[BEG]
+~Welcome to the world of Dungeons & Dragons! Usually playing the
+normal game is quite complex, however I decided to simplify some
+things to make the combat easier to understand.
+(STOP)
+
+[CHOOSE NAME]
+~Anyway, let's first choose a name for your character,
+please enter your hero's name:
+(STOP)
+
+[CHOOSE CLASS]
+~Now choose a class to be, this might be confusing right
+now, but as you play, you should be able to understand what
+each stat will contribute to:
+(NOTE: When you see '....' press enter)
+(STOP)
+
+[CAMPAIGN START]
+Great! Now let's start the campaign!
+
+You are a bounty hunter hired by the Lord of this land to 
+investigate the whereabouts of the evil Warlock, Mark Lehr,
+since there have been rumors of his return after a 100 year
+long rest.
+(STOP)
+
+[BATTLE1]
+After traversing a forest, you come across a castle, which
+many today dubbed 'NASA Keep', home to the Warlock Lehr. You
+see a guard at the door staring at you with deadly intent.
+(STOP)
+
+[BATTLE1.5]
+"Halt! Lehr will not be seeing anyone! Leave this instant!", 
+the guard then immediately sprints toward you. The battle begins!
+(STOP)
+
+[CAMPAIGN PT2]
+You defeated the guard! Onward!! You vigorously proceed into the
+castle now fully aware that Lehr is back and you are the land's only
+hope of stopping him from bringing darkness into the world. You also
+want that cash from the reward.
+
+[BATTLE2]
+As you make your way into the main hall, you can hear Lehr say,
+
+"MUWAHAHAHAHAHAHA!!! I WASN'T EXPECTING ANY RODENTS FROM THE
+KINGDOM TO COME THIS EARLY! YOU WILL NEVER STOP ME FROM LAUNCHING
+MY BALLISTIC MISSILE INTO THE KINGDOM! TRY AND STOP ME HAHAHAHAHA!"
+(STOP)
+
+[BATTLE2.5]
+Two more of Lehr's Bunny Guards show up! The second battle commences!!
+(STOP)
+
+[BATTLE3]
+You defeated the two Bunny Guards!! Soon afterward you sprint up
+to the top of NASA Keep to find Lehr sitting on his throne looking
+straight at you!
+(STOP)
+
+[BATTLE3.5]
+"AH HAH! THERE YOU ARE, OK LET'S GET THIS OVER WITH, I'VE ALREADY GOT
+THE NOOSE READY COME ON!", he pulls out a large noose for you to see
+in terror as you notice how much time as passed.
+(STOP)
+
+[BATTLE3.75]
+"THIS NOOSE'S POWER IS UNSTOPPABLE SINCE IT'S POWER INCREASES AS TIME
+PROGRESSES FURTHER! 100 YEARS HAVE PASSED SINCE MY LAST AWAKENED STATE
+AND DURING MY SLUMBER THE NOOSE ONLY GREW MUCH GREATER!!"
+(STOP)
+
+[BATTLE3.95]
+"NOW COME! FIGHT ME! SO I CAN LAUNCH MY BALLISTIC MISSILE ALREADY!"
+~~~The battle begins!!
+(STOP)

@@ -1,0 +1,27 @@
+[BEG]
+~Welcome to the world of Dungeons & Dragons! Usually playing the
+normal game is quite complex, however I decided to simplify some
+things to make the combat easier to understand.
+
+~Anyway, let's first choose a name for your character,
+please enter your hero's name:
+(STOP)
+
+[CHOOSE CLASS]
+~Now choose a class to be, this might be confusing right
+now, but as you play, you should be able to understand what
+each stat will contribute to:
+(NOTE: When you see '....' press enter)
+(STOP)
+
+[CAMPAIGN START]
+Great! Now let's start the campaign!
+You enter a dark cave seeking to find a mystical gem said to have
+immense power. You have been hired by a guild to
+find this gem and to stop it from falling into the wrong hands.
+(STOP)
+
+[BATTLE1]
+Wandering about in the dark you hear something approach you from
+behind! A goblin attacks! The battle begins!!!
+(STOP)
