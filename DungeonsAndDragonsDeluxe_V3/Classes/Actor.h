@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <stdlib.h> // rand()
 #include <ctime>    //Time for rand
-#include <map>
+#include <unordered_map>
 #include <cmath>
 #include <iomanip>
 
@@ -26,7 +26,7 @@ using namespace std;
 
 class Actor {
 private:
-    int health, mana, str, arm, wis, armDef, level;
+    int health, mana, str, arm, wis, armDef, level, speed;
     
 protected:
     string name; // name
@@ -37,9 +37,10 @@ public:
     Actor();
     virtual ~Actor();
     
-    map<string, int> commands; // command list <Command Name, Spell Use>
+    unordered_map<string, int> commands; // command list <Command Name, Spell Use>
     
     int GetHealth(){return health;}
+    int GetSpeed(){return speed;}
     int GetMana(){return mana;}
     int GetStrength(){return str;}
     int GetArmor(){return arm;}
@@ -57,6 +58,7 @@ public:
     void SetArmBns(int amount);
     void SetLevel(int amount);
     void SetTarget(Actor* target);
+    void SetSpeed(int amount);
     
     void DealDamage(Actor* target, int amount);
     void TakeDamage(int amount);
@@ -84,6 +86,20 @@ public:
         this->SetArmBns(GetArmBns()-2);
         this->SetLevel(GetLevel()-2);
     } 
+    
+    friend bool operator< ( Actor & lhs, Actor & rhs) {
+        return (lhs.GetSpeed() < rhs.GetSpeed());
+    }
+    friend bool operator> ( Actor & lhs, Actor & rhs) {
+        return (lhs.GetSpeed() > rhs.GetSpeed());
+    }
+    
+    friend bool operator<= ( Actor & lhs, Actor & rhs) {
+        return (lhs.GetSpeed() <= rhs.GetSpeed());
+    }
+    friend bool operator>= ( Actor & lhs, Actor & rhs) {
+        return (lhs.GetSpeed() >= rhs.GetSpeed());
+    }
 };
 
 #endif /* ACTOR_H */

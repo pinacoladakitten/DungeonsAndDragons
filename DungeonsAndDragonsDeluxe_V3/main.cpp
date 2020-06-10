@@ -26,8 +26,13 @@
 #include "Classes/GameSys.h"
 #include "Classes/World.h"
 #include "Classes/Actor.h"
+#include "BSTree.h"
 
 void Battle(World* level, Player* player, GameSys* System, int);
+void emptyQueue(queue<Actor*>, Player*, GameSys*, World*);
+void selectionSort(vector<Actor*>, int, int);
+void selectionSort2(vector<Actor*>, int, int&, int, int);
+void swap(Actor *, Actor *);
 
 using namespace std;
 /*
@@ -36,6 +41,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
     //Initialize Classes
+    srand(time(0));
     Player* player = new Player;
     GameSys* System = new GameSys;
     
@@ -77,8 +83,8 @@ int main(int argc, char** argv) {
         //Setup Battle 1
         //Enemy Setup
         World* world = new World;
-        Enemies* bunnyGuard = new Enemies(18, 7, 1, 3, 0, 11, "Bunny Guard");
-        bunnyGuard->commands.insert( pair<string,int>("Bunny Attack",0) );
+        Enemies* bunnyGuard = new Enemies(18, 7, 1, 3, 0, 11, "Bunny Guard", rand()%10);
+        bunnyGuard->commands.insert( make_pair("Bunny Attack",0) );
         bunnyGuard->SetTarget(player);
 
         //Create world and add enemies to array
@@ -104,10 +110,10 @@ int main(int argc, char** argv) {
         //Setup Battle 2
         //Enemy Setup
         World* world = new World;
-        Enemies* bunnyGuard1 = new Enemies(18, 7, 1, 3, 0, 11, "Bunny Guard #1");
-        Enemies* bunnyGuard2 = new Enemies(18, 7, 1, 2, 0, 11, "Bunny Guard #2");
-        bunnyGuard1->commands.insert( pair<string,int>("Bunny Attack",0) );
-        bunnyGuard2->commands.insert( pair<string,int>("Bunny Kick",0) );
+        Enemies* bunnyGuard1 = new Enemies(18, 7, 1, 3, 0, 11, "Bunny Guard #1",rand()%10);
+        Enemies* bunnyGuard2 = new Enemies(18, 7, 1, 2, 0, 11, "Bunny Guard #2",rand()%10);
+        bunnyGuard1->commands.insert( make_pair("Bunny Attack",0) );
+        bunnyGuard2->commands.insert( make_pair("Bunny Kick",0) );
         bunnyGuard1->SetTarget(player);
         bunnyGuard2->SetTarget(player);
 
@@ -118,11 +124,47 @@ int main(int argc, char** argv) {
          /*~~~~~~~~~~~~~~~~END OF BATTLE 2~~~~~~~~~~~~~~~~*/
         player->LevelUp(3);
         System->pressEnter();
+        player->stage = 4;
+        player->writeStats();
+        System->pressEnter();
+        delete world;
+    }
+    
+    if(player->stage == 4){
+        /*~~~~~~~~~~~~~~~~BATTLE 4~~~~~~~~~~~~~~~~*/
+        player->refillSpell();
+        System->getDia("[BATTLE4]");
+        System->pressEnter();
+        System->getDia("[BATTLE4.5]");
+        System->pressEnter();
+
+        //Setup Battle 2
+        //Enemy Setup
+        World* world = new World;
+        Enemies* bunnyGuard1 = new Enemies(21, 7, 1, 2, 0, 11, "Bunny Guard #1",rand()%10);
+        Enemies* bunnyGuard2 = new Enemies(21, 7, 1, 2, 0, 11, "Bunny Guard #2",rand()%10);
+        Enemies* weirdThing = new Enemies(16, 2, 1, 1, 2, 6, "Weird Thing #1",rand()%3);
+        bunnyGuard1->commands.insert( make_pair("Bunny Attack",0) );
+        bunnyGuard2->commands.insert( make_pair("Bunny Kick",0) );
+        weirdThing->commands.insert( make_pair("Rapid Jab",0) );
+        weirdThing->commands.insert( make_pair("Healing Word",0) );
+        bunnyGuard1->SetTarget(player);
+        bunnyGuard2->SetTarget(player);
+        weirdThing->SetTarget(player);
+
+        //Create world and add enemies to array
+        world->createEnSet(bunnyGuard1, bunnyGuard2, weirdThing);
+        Battle(world, player, System, 4);
+
+         /*~~~~~~~~~~~~~~~~END OF BATTLE 4~~~~~~~~~~~~~~~~*/
+        player->LevelUp(4);
+        System->pressEnter();
         player->stage = 3;
         player->writeStats();
         System->pressEnter();
         delete world;
     }
+    
     if(player->stage == 3){
         /*~~~~~~~~~~~~~~~~BATTLE 3~~~~~~~~~~~~~~~~*/
         World* world = new World;
@@ -138,11 +180,11 @@ int main(int argc, char** argv) {
 
         //Setup Battle 2
         //Enemy Setup
-        Enemies* Lehr = new Enemies(200, 7, 2, 5, 8, 11, "Lehr");
-        Lehr->commands.insert( pair<string,int>("Noose",0) );
-        Lehr->commands.insert( pair<string,int>("Mark Sort",0) );
-        Lehr->commands.insert( pair<string,int>("Magic Missile",0) );
-        Lehr->commands.insert( pair<string,int>("Bitcoin",0) );
+        Enemies* Lehr = new Enemies(200, 7, 2, 5, 8, 11, "Lehr", rand()%20);
+        Lehr->commands.insert( make_pair("Noose",0) );
+        Lehr->commands.insert( make_pair("Mark Sort",0) );
+        Lehr->commands.insert( make_pair("Magic Missile",0) );
+        Lehr->commands.insert( make_pair("Bitcoin",0) );
         Lehr->SetTarget(player);
         //Create world and add enemies to array
         world->createEnSet(Lehr);
@@ -179,6 +221,9 @@ void Battle(World* level, Player* player, GameSys* System, int stage){
             case 3:
                 System->getPort("[SKELLY]");
                 break;
+            case 4:
+                System->getPort("[3BUNNY]");
+                break;
             default:
                 break;
         }
@@ -199,7 +244,9 @@ void Battle(World* level, Player* player, GameSys* System, int stage){
         cout << "---------------------------------------------" << endl;
         /*---------------------CREATE TURN ORDER---------------------*/
         queue<Actor*> Qbjs; // Objects in the queue
-        list<Actor*> Lbjs; // List of objects to add to queue in random order
+        list<Actor*> Lbjs; // List of objects to add to vector in random order
+        vector<Actor*> Vbjs; // Vector to get objects and sort using recursions
+        BSTree<Actor*> bsTree;
         
         // Add objects to list to be randomized
         Lbjs.push_back(player);
@@ -215,31 +262,23 @@ void Battle(World* level, Player* player, GameSys* System, int stage){
             // Get the object that the random number lands on
             for(itl = Lbjs.begin(); itl != Lbjs.end(); ++itl){
                 if(i==gets){
-                    Qbjs.push(*itl);
+                    Vbjs.push_back(*itl);
                     Lbjs.erase(itl);
                     itl = Lbjs.end();
                 }
                 ++i;
             }
         }
-        /*---------------------TURNS---------------------*/
-        while(Qbjs.size() > 0)
-        {
-            // If we see the player in the list
-            if(Qbjs.front()->GetType()=="Player"){
-                player->Attack(level);
-                System->pressEnter();
-            }
-            // If we see any Enemies in the list
-            else if(Qbjs.front()->GetType()=="Enemy"){
-                if(Qbjs.front()->GetHealth() > 0){
-                    Qbjs.front()->Attack();
-                    System->pressEnter();
-                }
-            }
-            // Then pop what's in the list
-            Qbjs.pop();
+        /*---------------------SORT TURNS---------------------*/
+        selectionSort(Vbjs, Vbjs.size(), 0);
+        
+        for(int i = 0; i < Vbjs.size(); i++) {
+            bsTree.AddNode(Vbjs[i]);
         }
+        
+        Qbjs.push(bsTree.InOrder(bsTree.root));
+        /*---------------------TURNS---------------------*/
+        emptyQueue(Qbjs, player, System, level);
         
         //Check if enemies are alive
         battleEnd = true;
@@ -254,4 +293,51 @@ void Battle(World* level, Player* player, GameSys* System, int stage){
             player->onDeath();
         }
     }
+}
+
+void emptyQueue(queue<Actor*> queue, Player* player, GameSys* System, World* level) {
+    if(queue.size() > 0) {
+        // If we see the player in the list
+        if(queue.front()->GetType()=="Player"){
+            player->Attack(level);
+            System->pressEnter();
+        }
+        // If we see any Enemies in the list
+        else if(queue.front()->GetType()=="Enemy"){
+            if(queue.front()->GetHealth() > 0){
+                queue.front()->Attack();
+                System->pressEnter();
+            }
+        }
+        // Then pop what's in the list
+        queue.pop();
+        emptyQueue(queue, player, System, level);
+    }
+}
+
+void swap(Actor *xp, Actor *yp)  
+{  
+    Actor* temp = xp;  
+    xp = yp;
+    yp = temp;
+}  
+  
+void selectionSort(vector<Actor*> arr, int n, int i)
+{  
+    if(i < n-1) {
+        int min_idx = i;
+        selectionSort2(arr, n, min_idx, i, i+1);
+        // Swap the found minimum element with the first element  
+        swap(arr[min_idx], arr[i]);
+        selectionSort(arr, n, i+1);
+    }
+    return;
+}
+
+void selectionSort2(vector<Actor*> arr, int n, int& min_idx, int i, int j){
+    if(j < n) {
+        if (arr[j] > arr[min_idx]){min_idx = j;}
+        selectionSort2(arr, n, min_idx, i, j+1);
+    }
+    return;
 }

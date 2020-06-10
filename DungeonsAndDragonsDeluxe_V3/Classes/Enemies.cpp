@@ -13,13 +13,14 @@
 
 #include "Enemies.h"
 
-Enemies::Enemies(int health, int mana, int level, int str, int wis, int arm, string name) {
+Enemies::Enemies(int health, int mana, int level, int str, int wis, int arm, string name, int speed) {
     SetLevel(level);
     SetHealth(health * (GetLevel() * 1.10));
     SetMana(mana * (GetLevel() * 1.10));
     SetStrength(str * (GetLevel() * 1.10));
     SetWisdom(wis * (GetLevel() * 1.10));
     SetArmor(arm * (GetLevel() * 1.10));
+    SetSpeed(speed);
     this->name = name;
     this->type = "Enemy";
 }
@@ -37,7 +38,7 @@ void Enemies::Attack(){
     
     // Init map values
      // Create iterator for map
-    map<string, int>::iterator it;
+    unordered_map<string, int>::iterator it;
     int i = 0;
     // Get the command picked from the dice
     for (it=commands.begin(); it!=commands.end(); ++it){
@@ -67,6 +68,27 @@ void Enemies::Attack(){
         
         cout << this->name << " rolled: *" << roll << "(+" << this->GetStrength() << ")*" << endl;
         isAttack = true;
+    }
+    
+    // WEIRD THING ATTACKS----------------
+    if(selectCom == "Rapid Jab") {
+        //cout << "Rolling Dice to hit...1d20+Strength" << endl;
+        
+        cout << this->name << " rolled: *" << roll << "(+" << this->GetStrength() << ")*" << endl;
+        isAttack = true;
+    }
+    if(selectCom == "Healing Word") {
+        //cout << "Rolling Dice to hit...1d20+Strength" << endl;
+        Enemies* randAlly;
+        
+        int choice = rand() % 2;
+        if(choice)randAlly = allyTarg;
+        else randAlly = allyTarg1;
+        
+        roll = rollDice(6);
+        cout << this->name << " Healed: " << allyTarg->GetName() << " for " << "*" << roll << "(+" << this->GetWisdom() << ")*" << " health " << endl;
+        allyTarg->SetHealth(allyTarg->GetHealth()+roll+this->GetWisdom());
+        isAttack = false;
     }
     /*-----------LEHR ATTACKS-----------*/
     //check which command the player picked

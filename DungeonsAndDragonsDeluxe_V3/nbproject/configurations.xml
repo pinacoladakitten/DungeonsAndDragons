@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>BSTree.h</itemPath>
       <itemPath>CharaSav.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -57,6 +58,8 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="BSTree.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="CharaSav.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Classes/Actor.cpp" ex="false" tool="1" flavor2="0">
@@ -110,6 +113,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="BSTree.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="CharaSav.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Classes/Actor.cpp" ex="false" tool="1" flavor2="0">

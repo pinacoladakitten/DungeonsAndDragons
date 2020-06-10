@@ -8,17 +8,17 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Player.cpp</file>
-            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Actor.cpp</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Actor.h</file>
+            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Actor.cpp</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/World.cpp</file>
-            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/GameSys.cpp</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/main.cpp</file>
+            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/dialogue.txt</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Enemies.h</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Enemies.cpp</file>
+            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/enemyPort01.txt</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/World.h</file>
             <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/Player.h</file>
-            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/Classes/GameSys.h</file>
-            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/CharaSav.h</file>
+            <file>file:/C:/Users/wiiga/OneDrive/Documents/NetBeansProjects/CSC17A/DungeonsAndDragonsDeluxe_V3/BSTree.h</file>
         </group>
     </open-files>
 </project-private>

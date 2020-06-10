@@ -54,8 +54,28 @@ MY BALLISTIC MISSILE INTO THE KINGDOM! TRY AND STOP ME HAHAHAHAHA!"
 Two more of Lehr's Bunny Guards show up! The second battle commences!!
 (STOP)
 
+[CAMPAIGN PT4]
+You defeated the two guards! Onward!! You boisterously proceed more into the
+castle! Ready for the next fight!
+
+[BATTLE4]
+You look around, not an enemy in sight, you feel the ground trembling
+as Lehr's Ballistic Missile prepares its test launching sequences you
+then hear Lehr speak again in your head.
+
+"MUWAHAHAHAHAHAHA!!! YOU WILL NEVER GET HERE IN TIME, JUST WAIT
+MY MISSILE WILL LAUNCH AND THE KINGDOM WILL CEASE TO EXIST! NOW
+OUT OF MY SIGHT!!"
+(STOP)
+
+[BATTLE4.5]
+A trap door opens underneath you and you plunge into darkness. You wake up
+and TWO BUNNY GUARDS and SOME WEIRD LOOKING CREATURE ARE STARING AT YOU,
+~~~THE BATTLE BEGINS!!~~~
+(STOP)
+
 [BATTLE3]
-You defeated the two Bunny Guards!! Soon afterward you sprint up
+You defeated the two Bunny Guards and weird looking thing!! Soon afterward you sprint up
 to the top of NASA Keep to find Lehr sitting on his throne looking
 straight at you!
 (STOP)

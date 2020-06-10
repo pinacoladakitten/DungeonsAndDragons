@@ -35,6 +35,7 @@ void Actor::SetWisdom(int amount){this->wis = amount;}
 void Actor::SetArmBns(int amount){this->armDef = amount;}
 void Actor::SetLevel(int amount){this->level = amount;}
 void Actor::SetTarget(Actor* target){this->target = target;}
+void Actor::SetSpeed(int amount){this->speed = speed;}
 
 /*
 //roll dice function

@@ -39,6 +39,17 @@ void World::createEnSet(Enemies* enemy1, Enemies* enemy2, Enemies* enemy3, Enemi
     if(enemy2 != nullptr) enmSet.insert(enemy2);
     if(enemy3 != nullptr) enmSet.insert(enemy3);
     if(enemy4 != nullptr) enmSet.insert(enemy4);
+    
+    // Have enemies point to allies to heal and stuff
+    set <Enemies*> :: iterator itr;
+    vector<Enemies*> enm;
+    for (itr = enmSet.begin(); itr != enmSet.end(); ++itr) 
+    { enm.push_back(*itr);}
+    
+    for(int i = 0; i < enm.size(); i++) {
+        enm[i]->allyTarg = enm[rand()%enm.size()];
+        enm[i]->allyTarg1 = enm[rand()%enm.size()];
+    }
 }
 
 // Inserting objects into set

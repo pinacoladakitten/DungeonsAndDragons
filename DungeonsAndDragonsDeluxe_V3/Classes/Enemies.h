@@ -20,8 +20,11 @@ class Enemies : public Actor{
 private:
     
 public:
-    Enemies(int health, int mana, int level, int str, int wis, int arm, string name);
+    Enemies(int health, int mana, int level, int str, int wis, int arm, string name, int speed);
     virtual ~Enemies();
+    
+    Enemies* allyTarg;
+    Enemies* allyTarg1;
     
     virtual void Attack() override;
     

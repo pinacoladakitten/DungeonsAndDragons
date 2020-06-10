@@ -18,6 +18,7 @@
 Player::Player() {
     stage = 1;
     this->type="Player";
+    SetSpeed(10);
 }
 
 Player::~Player() {
@@ -39,11 +40,11 @@ void Player::setName() {
 //Refil Spell Slots
 void Player::refillSpell() {
     //Refill Spell Slots
-    commands.find("Fireblast")->second = 4+(this->GetWisdom()*0.5);
-    commands.find("Protect")->second = 2+(this->GetWisdom()*0.5);
-    commands.find("Lesser Heal")->second = 2+(this->GetWisdom()*0.5);
-    commands.find("Healing Word")->second = 2+(this->GetWisdom()*0.5);
-    commands.find("Vampiric Touch")->second = 2+(this->GetWisdom()*0.5);
+    if(commands.find("Fireblast")!= commands.end())     commands["Fireblast"] = 4+(this->GetWisdom()*0.5);
+    if(commands.find("Protect")!= commands.end())       commands["Protect"] = 2+(this->GetWisdom()*0.5);
+    if(commands.find("Lesser Heal")!= commands.end())   commands["Lesser Heal"] = 2+(this->GetWisdom()*0.5);
+    if(commands.find("Healing Word")!= commands.end())  commands["Healing Word"] = 2+(this->GetWisdom()*0.5);
+    if(commands.find("Vampiric Touch")!= commands.end())commands["Vampiric Touch"] = 2+(this->GetWisdom()*0.5);
 }
 void Player::printCommands(){
     //prompt player that it is their turn
@@ -54,7 +55,7 @@ void Player::printCommands(){
     cout << "========================" << endl;
     cout << "~~COMMANDS~~" << endl;
     // Iterate through commands map
-    map<string, int>::iterator it;
+    unordered_map<string, int>::iterator it;
     int i = 0;
     
     // Print the command with its associated spell use
@@ -81,7 +82,7 @@ string Player::playerTurn(World* level) {
         if(cin >> choice)
         {
             // Create map iterators
-            map<string, int>::iterator it;
+            unordered_map<string, int>::iterator it;
             int i = 0;
             // Find command in map
             for (it=commands.begin(); it!=commands.end(); ++it){
@@ -459,7 +460,7 @@ void Player::writeStats()
         playSav.str = GetStrength();
         playSav.wis = GetWisdom();
         playSav.arm = GetArmor();
-        playSav.job = this->job;
+        playSav.job = GetJob();
         playSav.level = GetLevel();
         playSav.stage = stage;
         
@@ -600,8 +601,8 @@ void Player::SetupChar(){
             job = 'W';
             // Add to commands list
             // Then add to another list of Spell Uses
-            commands.insert( pair<string,int>("Attack", 0) );
-            commands.insert( pair<string,int>("Protect",2) );
+            commands.insert( make_pair("Attack", 0) );
+            commands.insert( make_pair("Protect",2) );
         }
         else if(job == 'M' || job == 'm'){ //if picked mage
             cout << "You've chosen Mage!" << endl;
@@ -612,8 +613,8 @@ void Player::SetupChar(){
             job = 'M';
             // Add to commands list
             // Then add to another list of Spell Uses
-            commands.insert( pair<string,int>("Attack",0) );
-            commands.insert( pair<string,int>("Fireblast",4) );
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Fireblast",4) );
         }
         else if(job == 'C' || job == 'c'){ //if picked mage
             cout << "You've chosen Cleric!" << endl;
@@ -624,8 +625,8 @@ void Player::SetupChar(){
             job = 'C';
             // Add to commands list
             // Then add to another list of Spell Uses
-            commands.insert( pair<string,int>("Attack",0) );
-            commands.insert( pair<string,int>("Lesser Heal",3) );
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Lesser Heal",3) );
         }
         else{
             //if invalid, reset and ask again
@@ -645,40 +646,44 @@ void Player::SetupChar(){
 void Player::getStats(){
     switch(job){
         case 'W':
-            commands.insert( pair<string,int>("Attack",0) );
-            commands.insert( pair<string,int>("Protect",2) );
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Protect",2) );
             break;
         case 'M':
-            commands.insert( pair<string,int>("Attack",0) );
-            commands.insert( pair<string,int>("Fireblast",4) );
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Fireblast",4) );
             break;
         case 'C':
-            commands.insert( pair<string,int>("Attack",0) );
-            commands.insert( pair<string,int>("Lesser Heal",3) );
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Lesser Heal",3) );
+            break;
+        default:
+            commands.insert( make_pair("Attack",0) );
+            commands.insert( make_pair("Lesser Heal",3) );
             break;
     }
     
     if(GetLevel() >= 2){
         if(job == 'W'){
-            commands.insert( pair<string,int>("Whirlwind",0) );
+            commands.insert( make_pair("Whirlwind",0) );
         }
         if(job == 'M'){
-            commands.insert( pair<string,int>("Healing Word",4) );
+            commands.insert( make_pair("Healing Word",4) );
         }
         if(job == 'C'){
-            commands.insert( pair<string,int>("Healing Word",4) );
+            commands.insert( make_pair("Healing Word",4) );
         }
     }
     if(GetLevel() >= 3){
         if(job == 'W'){
-            commands.insert( pair<string,int>("Healing Word",4) );
+            commands.insert( make_pair("Healing Word",4) );
         }
         if(job == 'M'){
-            commands.insert( pair<string,int>("Vampiric Touch",3) );
+            commands.insert( make_pair("Vampiric Touch",3) );
         }
         if(job == 'C'){
-            commands.insert( pair<string,int>("Protect",4) );
-            commands.insert( pair<string,int>("Whirlwind",0) );
+            commands.insert( make_pair("Protect",4) );
+            commands.insert( make_pair("Whirlwind",0) );
         }
     }
 }
@@ -705,31 +710,31 @@ void Player::LevelUp(int level){
         case 2:
             if(job == 'W'){
                 cout << "~You learned WHIRLWIND!!~" << endl;
-                commands.insert( pair<string,int>("Whirlwind",0) );
+                commands.insert( make_pair("Whirlwind",0) );
             }
             if(job == 'M'){
                 cout << "~You learned HEALING WORD!!~" << endl;
-                commands.insert( pair<string,int>("Healing Word",4) );
+                commands.insert( make_pair("Healing Word",4) );
             }
             if(job == 'C'){
                 cout << "~You learned HEALING WORD!!~" << endl;
-                commands.insert( pair<string,int>("Healing Word",4) );
+                commands.insert( make_pair("Healing Word",4) );
             }
             break;
         case 3:
             if(job == 'W'){
                 cout << "~You learned HEALING WORD!!~" << endl;
-                commands.insert( pair<string,int>("Healing Word",4) );
+                commands.insert( make_pair("Healing Word",4) );
             }
             if(job == 'M'){
                 cout << "~You learned VAMPIRIC TOUCH!!~" << endl;
-                commands.insert( pair<string,int>("Vampiric Touch",3) );
+                commands.insert( make_pair("Vampiric Touch",3) );
             }
             if(job == 'C'){
                 cout << "~You learned PROTECT!!~" << endl;
                 cout << "~You learned WHIRLWIND!!~" << endl;
-                commands.insert( pair<string,int>("Protect",4) );
-                commands.insert( pair<string,int>("Whirlwind",0) );
+                commands.insert( make_pair("Protect",4) );
+                commands.insert( make_pair("Whirlwind",0) );
             }
             break;
         default:
